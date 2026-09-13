@@ -23,13 +23,13 @@ public class CustomsCheckService {
         CustomsCheck check = new CustomsCheck();
 
         check.setId(0);
-        check.setOrigCountry(origin.getCommonName());
-        check.setDestCountry(destination.getCommonName());
+        check.setOriginCountry(origin.getCountryCode());
+        check.setDestCountry(destination.getCountryCode());
         
         if (origin == null || destination == null) {
             check.setTier(Tier.UNKNOWN);
         } else {
-            check.setOrigRegion(origin.getRegion());
+            check.setOriginRegion(origin.getRegion());
             check.setDestRegion(destination.getRegion());
             check.setTier(determineTier(origin, destination));
             check.setCreatedAt(OffsetDateTime.now());
@@ -39,7 +39,7 @@ public class CustomsCheckService {
     }
 
     private Tier determineTier(Country origin, Country destination) {
-        if (origin.getSubRegion().equalsIgnoreCase(destination.getSubRegion())) {
+        if (origin.getSubregion().equalsIgnoreCase(destination.getSubregion())) {
             return Tier.REGIONAL;
         } else if (origin.getRegion().equalsIgnoreCase(destination.getRegion())) {
             return Tier.CONTINENTAL;

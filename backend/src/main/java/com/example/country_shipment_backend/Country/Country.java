@@ -28,8 +28,9 @@ public class Country {
     
     @Column(name = "common_name")
     private String commonName;
+
     private String region;
-    private String subRegion;
+    private String subregion;
 
     @Column(name = "fetched_at", insertable = false, updatable = false)
     @Generated(event = EventType.INSERT)

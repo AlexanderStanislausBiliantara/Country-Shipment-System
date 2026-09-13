@@ -7,6 +7,8 @@ import org.hibernate.generator.EventType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,13 +28,16 @@ public class CustomsCheck {
     private int id;
 
     @Column(nullable = false)
-    private String origCountry;
+    private String originCountry;
 
     @Column(nullable = false)
     private String destCountry;
 
-    private String origRegion;
+    private String originRegion;
     private String destRegion;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tier", length = 15)
     private Tier tier;
 
     @Column(name = "created_at", insertable = false, updatable = false)
