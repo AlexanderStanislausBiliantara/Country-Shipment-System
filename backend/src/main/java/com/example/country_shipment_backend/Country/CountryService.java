@@ -42,8 +42,6 @@ public class CountryService {
 
             CountryDTO fetchedCountry = response.getData().getObjects().get(0);
 
-            System.out.println(fetchedCountry.getCodes().getAlpha2().length());
-
             Country newCountry = new Country(
                     0,
                     fetchedCountry.getCodes().getAlpha2(), 
