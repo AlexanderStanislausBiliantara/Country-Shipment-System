@@ -20,8 +20,8 @@ public class CustomsCheckController {
 
 
     @PostMapping("/api/custom-checks")
-    public ResponseEntity<String> createCustomCheck(@RequestBody String origCode, @RequestBody String destCode) {
-        CustomsCheck savedCustoms = this.customsCheckService.createCustomsCheck(origCode, destCode);
+    public ResponseEntity<String> createCustomCheck(@RequestBody CreateCustomsCheckRequest request) {
+        CustomsCheck savedCustoms = this.customsCheckService.createCustomsCheck(request.origCode, request.destCode);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("Successfully created customs check with tier: " + savedCustoms.getTier());
     }
