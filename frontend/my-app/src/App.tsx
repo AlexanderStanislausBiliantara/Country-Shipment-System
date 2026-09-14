@@ -1,120 +1,165 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
 
+interface CustomsCheck {
+  id: number;
+  originCountry: string;
+  destCountry: string;
+  originRegion: string | null;
+  destRegion: string | null;
+  tier: string;
+  createdAt: string;
+}
+
+const API_BASE_URL = 'http://localhost:8080/api/custom-checks';
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [originCode, setOriginCode] = useState('');
+  const [destCode, setDestCode] = useState('');
+  const [checks, setChecks] = useState<CustomsCheck[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const fetchChecks = async () => {
+    try {
+      const response = await fetch(API_BASE_URL);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch data.');
+      }
+
+      const data = await response.json();
+      setChecks(data);
+
+    } catch (err) {
+      setError('Could not load customs checks.');
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchChecks();
+  }, []);
+
+  const handleSubmit = async (event: React.SubmitEvent): Promise<void> => {
+    event.preventDefault();
+
+    if (originCode.length != 2 || destCode.length != 2) {
+      setError('Country codes must be 2 letters.');
+      return;
+    }
+
+    for (let i = 0;i < originCode.length;i++) {
+      const code = originCode.charCodeAt(i);
+      const isUpperCase = code >= 65 && code <= 90;
+      const isLowerCase = code >= 97 && code <= 122;
+
+      if (!isUpperCase && !isLowerCase) {
+        setError('Country codes must be uppercase or lowercase letters.');
+        return;
+      }
+    }
+
+    const codeRegex = /^[A-Za-z]{2}$/;
+    if (!codeRegex.test(originCode) || !codeRegex.test(destCode)) {
+      setError('Country codes must be 2 letters.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(API_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          origCode: originCode.toUpperCase(),
+          destCode: destCode.toUpperCase()
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create customs check.');
+      }
+    } catch (err) {
+        setError('Could not insert new customs check.');
+        console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <div className="dashboard-container">
+        <h1>Customs Check Dashboard</h1>
 
-      <div className="ticks"></div>
+        <form onSubmit={handleSubmit} className="form-container">
+          <div className="form-group">
+            <label>Origin Code</label>
+            <input
+              type="text"
+              value={originCode}
+              onChange={(e) => setOriginCode(e.target.value)}
+              maxLength={3}
+              className="form-input"
+              required
+            />
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          <div className="form-group">
+            <label>Destination Code</label>
+            <input 
+              type="text"
+              value={destCode}
+              onChange={(e) => setDestCode(e.target.value)}
+              maxLength={3}
+              className="form-input"
+              required
+            />
+          </div>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+          <button type="submit" disabled={loading} className="submit-btn">
+            {loading ? 'Processing...' : 'Create Check'}
+          </button>
+        </form>
+
+        {checks.length === 0 ? (
+          <p>No customs checks found.</p>
+        ) : (
+          <table className="checks-table">
+            <thead>
+              <tr>
+                <th>Origin</th>
+                <th>Destination</th>
+                <th>Origin Region</th>
+                <th>Dest Region</th>
+                <th>Tier</th>
+                <th>Created At</th>
+              </tr>
+            </thead>
+            <tbody>
+              {checks.map((check, index) => (
+                <tr key={check.id || index}>
+                  <td>{check.originCountry}</td>
+                  <td>{check.destCountry}</td>
+                  <td>{check.originRegion || 'N/A'}</td>
+                  <td>{check.destRegion || 'N/A'}</td>
+                  <td className={check.tier === 'UNKNOWN' ? 'tier-unknown' : 'tier-known'}>
+                    {check.tier}
+                  </td>
+                  <td className="date-text">
+                    {new Date(check.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </>
   )
 }
