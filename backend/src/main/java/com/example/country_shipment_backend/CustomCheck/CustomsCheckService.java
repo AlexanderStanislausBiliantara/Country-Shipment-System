@@ -60,7 +60,6 @@ public class CustomsCheckService {
 
     public List<CustomsCheck> listAllCustomsChecks() {
         List<CustomsCheck> result = this.customsCheckRepository.findAll();
-
         return result;
     }
 

@@ -27,7 +27,6 @@ public class CountryService {
         Optional<Country> cached = this.countryRepository.findByCountryCode(code.toUpperCase());
 
         if (!cached.isEmpty()) {
-            System.out.println("masuk");
             Country country = cached.get();
             return country;
         }
