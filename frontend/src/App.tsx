@@ -18,7 +18,7 @@ function App() {
   const [destCode, setDestCode] = useState('');
   const [checks, setChecks] = useState<CustomsCheck[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [_error, setError] = useState('');
 
   const fetchChecks = async () => {
     try {

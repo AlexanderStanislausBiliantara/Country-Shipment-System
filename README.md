@@ -15,19 +15,6 @@
 
 ## Running the Project
 
-### Option 1: Docker
-The easiest way to run the entire stack (Frontend, Backend, and Database) is using Docker Compose.
-
-1. Ensure Docker is installed and running on your machine.
-2. Clone this repository and navigate to the root directory.
-3. Run the following command:
-   ```bash
-   docker-compose up --build
-4. Once the containers are running, open your browser and navigate to:
-    Frontend: http://localhost:3000
-    Backend API: http://localhost:8080
-
-### Option 2: Local Development
 **Prerequisites:** Java 17+, Maven, Node.js 18+, PostgreSQL
 
 1. Ensure PostgreSQL is running on localhost:5432 and update credentials in `backend/src/main/resources/application.properties`.
