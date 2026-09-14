@@ -27,6 +27,7 @@ public class CountryService {
         Optional<Country> cached = this.countryRepository.findByCountryCode(code.toUpperCase());
 
         if (!cached.isEmpty()) {
+            System.out.println("masuk");
             Country country = cached.get();
             return country;
         }
@@ -35,7 +36,7 @@ public class CountryService {
         
         try {
             APIResponseDTO response = restClient.get().uri(apiURI, code).header("Authorization", "Bearer " + apiKey).retrieve().body(APIResponseDTO.class);
-
+            
             if (response == null || response.getData() == null) {
                 return null;
             }
